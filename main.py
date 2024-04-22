@@ -68,3 +68,5 @@ for txout in txex['vout'] :
         amount=txout['value']
     )
     tx_outs.append(vout)
+
+# it is not serliatiable because we does not implemented 
