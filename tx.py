@@ -239,7 +239,7 @@ class Tx:
                 z = self.sig_hash(input_index, redeem_script)
                 witness = None
         else:
-
+            
             if script_pubkey.is_p2wpkh_script_pubkey():
                 z = self.segwit_hash(input_index)
                 witness = tx_in.witness
@@ -256,7 +256,7 @@ class Tx:
         return combined.evaluate(z, witness)
     
 
-    def verify(self):
+    def verify(self): # verify each of the script_sig in the each input vin 
         for i in range(len(self.tx_ins)):
             if not self.verify_input(i):
                 return False
