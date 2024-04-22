@@ -3,7 +3,7 @@
 # TxIn 
 # TxOut 
 from usefulfunctions import int_to_little_endian , encode_varint 
-    
+from script import Script 
 class TxOut:
     #this is the basic frame of the
     def __init__(self, amount, script_pubkey):
