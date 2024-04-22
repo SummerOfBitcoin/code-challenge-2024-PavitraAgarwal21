@@ -116,3 +116,13 @@ def decode_base58(s):
         raise ValueError('bad address: {} {}'.format(checksum, hash256(combined[:-4])[:4]))
     return combined[1:-4]
 
+
+
+def h160_to_p2pkh_address(h160):
+    prefix = b'\x00'
+    return encode_base58_checksum(prefix + h160)
+
+
+def h160_to_p2sh_address(h160):
+    prefix = b'\x05'
+    return encode_base58_checksum(prefix + h160)
