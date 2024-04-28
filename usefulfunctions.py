@@ -1,11 +1,22 @@
 import hashlib
-
 SIGHASH_ALL = 1
 SIGHASH_NONE = 2
 SIGHASH_SINGLE = 3
 BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 def little_endian_to_int(b):
     return int.from_bytes(b, 'little')
+
+def decode_base58(s):
+    num = 0
+    for c in s:
+        num *= 58
+        num += BASE58_ALPHABET.index(c)
+    combined = num.to_bytes(25, byteorder='big')
+    checksum = combined[-4:]
+    if hash256(combined[:-4])[:4] != checksum:
+        raise ValueError('bad address: {} {}'.format(checksum, hash256(combined[:-4])[:4]))
+    return combined[1:-4]
+
 
 def read_varint(s):
     i = s.read(1)[0]
@@ -126,3 +137,28 @@ def h160_to_p2pkh_address(h160):
 def h160_to_p2sh_address(h160):
     prefix = b'\x05'
     return encode_base58_checksum(prefix + h160)
+
+
+def merkle_parent(hash1, hash2):
+
+    return hash256(hash1 + hash2)
+
+
+def merkle_parent_level(hashes):
+
+    if len(hashes) == 1:
+        raise RuntimeError('Cannot take a parent level with only 1 item')
+    if len(hashes) % 2 == 1:
+        hashes.append(hashes[-1])
+    parent_level = []
+    for i in range(0, len(hashes), 2):
+        parent = merkle_parent(hashes[i], hashes[i + 1])
+        parent_level.append(parent)
+    return parent_level
+
+
+def merkle_root(hashes):
+    current_level = hashes
+    while len(current_level) > 1:
+        current_level = merkle_parent_level(current_level)
+    return current_level[0]

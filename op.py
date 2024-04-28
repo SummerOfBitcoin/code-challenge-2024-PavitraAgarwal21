@@ -1,95 +1,139 @@
-# i am using the sample code where there is the op code mapping to reduce the workload and this is taken from the book 
-from usefulfunctions import encode_num , decode_num , hash160 , hash256 , hashlib
+import hashlib
+from speck256k1 import (
+    S256Point,
+    Signature,
+)
 
-from speck256k1 import S256Point , Signature
+from usefulfunctions import (
+    hash160,
+    hash256,
+)
+
+def encodenum(num):
+    if num == 0:
+        return b''
+    absnum = abs(num)
+    negative = num < 0
+    result = bytearray()
+    while absnum:
+        result.append(absnum & 0xff)
+        absnum >>= 8
+    if result[-1] & 0x80:
+        if negative:
+            result.append(0x80)
+        else:
+            result.append(0)
+    elif negative:
+        result[-1] |= 0x80
+    return bytes(result)
+
+
+def decodenum(element):
+    if element == b'':
+        return 0
+    bigendian = element[::-1]
+
+    if bigendian[0] & 0x80:
+        negative = True
+        result = bigendian[0] & 0x7f
+    else:
+        negative = False
+        result = bigendian[0]
+    for c in bigendian[1:]:
+        result <<= 8
+        result += c
+    if negative:
+        return -result
+    else:
+        return result
+
 
 def op0(stack):
-    stack.append(encode_num(0))
+    stack.append(encodenum(0))
     return True
 
-
 def op1negate(stack):
-    stack.append(encode_num(-1))
+    stack.append(encodenum(-1))
     return True
 
 
 def op1(stack):
-    stack.append(encode_num(1))
+    stack.append(encodenum(1))
     return True
 
 
 def op2(stack):
-    stack.append(encode_num(2))
+    stack.append(encodenum(2))
     return True
 
 
 def op3(stack):
-    stack.append(encode_num(3))
+    stack.append(encodenum(3))
     return True
 
 
 def op4(stack):
-    stack.append(encode_num(4))
+    stack.append(encodenum(4))
     return True
 
 
 def op5(stack):
-    stack.append(encode_num(5))
+    stack.append(encodenum(5))
     return True
 
 
 def op6(stack):
-    stack.append(encode_num(6))
+    stack.append(encodenum(6))
     return True
 
 
 def op7(stack):
-    stack.append(encode_num(7))
+    stack.append(encodenum(7))
     return True
 
 
 def op8(stack):
-    stack.append(encode_num(8))
+    stack.append(encodenum(8))
     return True
 
 
 def op9(stack):
-    stack.append(encode_num(9))
+    stack.append(encodenum(9))
     return True
 
 
 def op10(stack):
-    stack.append(encode_num(10))
+    stack.append(encodenum(10))
     return True
 
 
 def op11(stack):
-    stack.append(encode_num(11))
+    stack.append(encodenum(11))
     return True
 
 
 def op12(stack):
-    stack.append(encode_num(12))
+    stack.append(encodenum(12))
     return True
 
 
 def op13(stack):
-    stack.append(encode_num(13))
+    stack.append(encodenum(13))
     return True
 
 
 def op14(stack):
-    stack.append(encode_num(14))
+    stack.append(encodenum(14))
     return True
 
 
 def op15(stack):
-    stack.append(encode_num(15))
+    stack.append(encodenum(15))
     return True
 
 
 def op16(stack):
-    stack.append(encode_num(16))
+    stack.append(encodenum(16))
     return True
 
 
@@ -100,68 +144,68 @@ def opnop(stack):
 def opif(stack, items):
     if len(stack) < 1:
         return False
-    good = []
-    baad = []
-    curarr = good
+    trueitems = []
+    falseitems = []
+    currentarray = trueitems
     found = False
-    num_end_if_needed = 1
+    numendifsneeded = 1
     while len(items) > 0:
         item = items.pop(0)
         if item in (99, 100):
-            num_end_if_needed += 1
-            curarr.append(item)
-        elif num_end_if_needed == 1 and item == 103:
-            curarr = baad
+            numendifsneeded += 1
+            currentarray.append(item)
+        elif numendifsneeded == 1 and item == 103:
+            currentarray = falseitems
         elif item == 104:
-            if num_end_if_needed == 1:
+            if numendifsneeded == 1:
                 found = True
                 break
             else:
-                num_end_if_needed -= 1
-                curarr.append(item)
+                numendifsneeded -= 1
+                currentarray.append(item)
         else:
-            curarr.append(item)
+            currentarray.append(item)
     if not found:
         return False
     element = stack.pop()
-    if decode_num(element) == 0:
-        items[:0] = baad
+    if decodenum(element) == 0:
+        items[:0] = falseitems
     else:
-        items[:0] = good
+        items[:0] = trueitems
     return True
 
 
 def opnotif(stack, items):
     if len(stack) < 1:
         return False
-    good = []
-    baad = []
-    curarr = good
+    trueitems = []
+    falseitems = []
+    currentarray = trueitems
     found = False
-    num_end_if_needed = 1
+    numendifsneeded = 1
     while len(items) > 0:
         item = items.pop(0)
         if item in (99, 100):
-            num_end_if_needed += 1
-            curarr.append(item)
-        elif num_end_if_needed == 1 and item == 103:
-            curarr = baad
+            numendifsneeded += 1
+            currentarray.append(item)
+        elif numendifsneeded == 1 and item == 103:
+            currentarray = falseitems
         elif item == 104:
-            if num_end_if_needed == 1:
+            if numendifsneeded == 1:
                 found = True
                 break
             else:
-                num_end_if_needed -= 1
-                curarr.append(item)
+                numendifsneeded -= 1
+                currentarray.append(item)
         else:
-            curarr.append(item)
+            currentarray.append(item)
     if not found:
         return False
     element = stack.pop()
-    if decode_num(element) == 0:
-        items[:0] = good
+    if decodenum(element) == 0:
+        items[:0] = trueitems
     else:
-        items[:0] = baad
+        items[:0] = falseitems
     return True
 
 
@@ -169,7 +213,7 @@ def opverify(stack):
     if len(stack) < 1:
         return False
     element = stack.pop()
-    if decode_num(element) == 0:
+    if decodenum(element) == 0:
         return False
     return True
 
@@ -238,13 +282,13 @@ def op2swap(stack):
 def opifdup(stack):
     if len(stack) < 1:
         return False
-    if decode_num(stack[-1]) != 0:
+    if decodenum(stack[-1]) != 0:
         stack.append(stack[-1])
     return True
 
 
 def opdepth(stack):
-    stack.append(encode_num(len(stack)))
+    stack.append(encodenum(len(stack)))
     return True
 
 
@@ -279,7 +323,7 @@ def opover(stack):
 def oppick(stack):
     if len(stack) < 1:
         return False
-    n = decode_num(stack.pop())
+    n = decodenum(stack.pop())
     if len(stack) < n + 1:
         return False
     stack.append(stack[-n - 1])
@@ -289,7 +333,7 @@ def oppick(stack):
 def oproll(stack):
     if len(stack) < 1:
         return False
-    n = decode_num(stack.pop())
+    n = decodenum(stack.pop())
     if len(stack) < n + 1:
         return False
     if n == 0:
@@ -322,7 +366,7 @@ def optuck(stack):
 def opsize(stack):
     if len(stack) < 1:
         return False
-    stack.append(encode_num(len(stack[-1])))
+    stack.append(encodenum(len(stack[-1])))
     return True
 
 
@@ -332,9 +376,9 @@ def opequal(stack):
     element1 = stack.pop()
     element2 = stack.pop()
     if element1 == element2:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
@@ -345,35 +389,35 @@ def opequalverify(stack):
 def op1add(stack):
     if len(stack) < 1:
         return False
-    element = decode_num(stack.pop())
-    stack.append(encode_num(element + 1))
+    element = decodenum(stack.pop())
+    stack.append(encodenum(element + 1))
     return True
 
 
 def op1sub(stack):
     if len(stack) < 1:
         return False
-    element = decode_num(stack.pop())
-    stack.append(encode_num(element - 1))
+    element = decodenum(stack.pop())
+    stack.append(encodenum(element - 1))
     return True
 
 
 def opnegate(stack):
     if len(stack) < 1:
         return False
-    element = decode_num(stack.pop())
-    stack.append(encode_num(-element))
+    element = decodenum(stack.pop())
+    stack.append(encodenum(-element))
     return True
 
 
 def opabs(stack):
     if len(stack) < 1:
         return False
-    element = decode_num(stack.pop())
+    element = decodenum(stack.pop())
     if element < 0:
-        stack.append(encode_num(-element))
+        stack.append(encodenum(-element))
     else:
-        stack.append(encode_num(element))
+        stack.append(encodenum(element))
     return True
 
 
@@ -381,10 +425,10 @@ def opnot(stack):
     if len(stack) < 1:
         return False
     element = stack.pop()
-    if decode_num(element) == 0:
-        stack.append(encode_num(1))
+    if decodenum(element) == 0:
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
@@ -392,64 +436,64 @@ def op0notequal(stack):
     if len(stack) < 1:
         return False
     element = stack.pop()
-    if decode_num(element) == 0:
-        stack.append(encode_num(0))
+    if decodenum(element) == 0:
+        stack.append(encodenum(0))
     else:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     return True
 
 
 def opadd(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
-    stack.append(encode_num(element1 + element2))
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
+    stack.append(encodenum(element1 + element2))
     return True
 
 
 def opsub(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
-    stack.append(encode_num(element2 - element1))
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
+    stack.append(encodenum(element2 - element1))
     return True
 
 
 def opbooland(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element1 and element2:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
 def opboolor(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element1 or element2:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
 def opnumequal(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element1 == element2:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
@@ -460,97 +504,97 @@ def opnumequalverify(stack):
 def opnumnotequal(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element1 == element2:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     else:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     return True
 
 
 def oplessthan(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element2 < element1:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
 def opgreaterthan(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element2 > element1:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
 def oplessthanorequal(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element2 <= element1:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
 def opgreaterthanorequal(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element2 >= element1:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
 def opmin(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element1 < element2:
-        stack.append(encode_num(element1))
+        stack.append(encodenum(element1))
     else:
-        stack.append(encode_num(element2))
+        stack.append(encodenum(element2))
     return True
 
 
 def opmax(stack):
     if len(stack) < 2:
         return False
-    element1 = decode_num(stack.pop())
-    element2 = decode_num(stack.pop())
+    element1 = decodenum(stack.pop())
+    element2 = decodenum(stack.pop())
     if element1 > element2:
-        stack.append(encode_num(element1))
+        stack.append(encodenum(element1))
     else:
-        stack.append(encode_num(element2))
+        stack.append(encodenum(element2))
     return True
 
 
 def opwithin(stack):
     if len(stack) < 3:
         return False
-    maximum = decode_num(stack.pop())
-    minimum = decode_num(stack.pop())
-    element = decode_num(stack.pop())
+    maximum = decodenum(stack.pop())
+    minimum = decodenum(stack.pop())
+    element = decodenum(stack.pop())
     if element >= minimum and element < maximum:
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
@@ -606,9 +650,9 @@ def opchecksig(stack, z):
     except (ValueError, SyntaxError) as e:
         return False
     if point.verify(z, sig):
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     else:
-        stack.append(encode_num(0))
+        stack.append(encodenum(0))
     return True
 
 
@@ -619,23 +663,22 @@ def opchecksigverify(stack, z):
 def opcheckmultisig(stack, z):
     if len(stack) < 1:
         return False
-    n = decode_num(stack.pop())
+    n = decodenum(stack.pop())
     if len(stack) < n + 1:
         return False
-    sec_pub_keys = []
+    secpubkeys = []
     for _ in range(n):
-        sec_pub_keys.append(stack.pop())
-    m = decode_num(stack.pop())
+        secpubkeys.append(stack.pop())
+    m = decodenum(stack.pop())
     if len(stack) < m + 1:
         return False
-    der_sig = []
+    dersignatures = []
     for _ in range(m):
-        # signature is assumed to be using SIGHASHALL
-        der_sig.append(stack.pop()[:-1])
+        dersignatures.append(stack.pop()[:-1])
     stack.pop()
     try:
-        points = [S256Point.parse(sec) for sec in sec_pub_keys]
-        sigs = [Signature.parse(der) for der in der_sig]
+        points = [S256Point.parse(sec) for sec in secpubkeys]
+        sigs = [Signature.parse(der) for der in dersignatures]
         for sig in sigs:
             if len(points) == 0:
                 return False
@@ -643,7 +686,7 @@ def opcheckmultisig(stack, z):
                 point = points.pop(0)
                 if point.verify(z, sig):
                     break
-        stack.append(encode_num(1))
+        stack.append(encodenum(1))
     except (ValueError, SyntaxError):
         return False
     return True
@@ -658,7 +701,7 @@ def opchecklocktimeverify(stack, locktime, sequence):
         return False
     if len(stack) < 1:
         return False
-    element = decode_num(stack[-1])
+    element = decodenum(stack[-1])
     if element < 0:
         return False
     if element < 500000000 and locktime > 500000000:
@@ -673,7 +716,7 @@ def opchecksequenceverify(stack, version, sequence):
         return False
     if len(stack) < 1:
         return False
-    element = decode_num(stack[-1])
+    element = decodenum(stack[-1])
     if element < 0:
         return False
     if element & (1 << 31) == (1 << 31):
