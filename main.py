@@ -81,7 +81,7 @@ totalwu =0
 bitsize =0
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
-directory =  os.path.join(script_directory, "mempool")
+directory =  os.path.join(script_directory, "checkpool")
 for filename in os.listdir(directory):
   if filename.endswith('.json'):
         filepath = os.path.join(directory, filename)
@@ -167,7 +167,7 @@ txides = [bytes.fromhex(h) for h in txids]
 
 
 block = Block (
-  version = 2 ,
+  version = 0x20000002 ,
   prev_block= bytes.fromhex(base_block),
   merkle_root= merkle_root(txides) ,
   timestamp= int(ts),
