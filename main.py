@@ -171,7 +171,7 @@ block = Block (
   prev_block= bytes.fromhex(base_block),
   merkle_root= merkle_root(txides) ,
   timestamp= int(ts),
-  bits=bytes.fromhex('1dffff00') ,
+  bits=bytes.fromhex('1f00ffff') ,
   nonce= bytes.fromhex(nonce())  , #nonce()) , #nonce should be of the bytes 
   tx_hashes = txides
 )
