@@ -62,7 +62,7 @@ class Tx:
         return self.hash().hex() # txid 
     
     def wtxid(self) : # used to find the wxtid 
-        return (hash256(self.serialize_segwit())).hex() # used in the formation of the witness commitment 
+        return (hash256(self.serialize_segwit())[::-1]).hex() # used in the formation of the witness commitment 
 
     # tag::source5[]
     def hash(self):

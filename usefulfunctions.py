@@ -140,12 +140,10 @@ def h160_to_p2sh_address(h160):
 
 
 def merkle_parent(hash1, hash2):
-
     return hash256(hash1 + hash2)
 
 
 def merkle_parent_level(hashes):
-
     if len(hashes) == 1:
         raise RuntimeError('Cannot take a parent level with only 1 item')
     if len(hashes) % 2 == 1:

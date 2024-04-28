@@ -115,13 +115,9 @@ for filename in os.listdir(directory):
         except Exception as e:
             continue
 
-
-
-
-hashes = [bytes.fromhex(h) for h in wxtid]
+hashes = [bytes.fromhex(h)[::-1] for h in wxtid]
 wxc = wxcommitment(merkle_root(hashes),bytes.fromhex(wxtidcons)).hex()
 witnesscomitmentpubkeyscript = "6a24aa21a9ed"+wxc
-
 # so let now create the coinbase transaction 
 txin = [TxIn (
   prev_tx=bytes.fromhex("0000000000000000000000000000000000000000000000000000000000000000"),
@@ -212,7 +208,8 @@ with open(output_file_path, "w") as output_file:
       output_file.write("{}\n".format(tx))
 
 
-
+# hashesdd = [bytes.fromhex(h)[::-1] for h in txdd]
+# print(merkle_root(hashesdd).hex())
   
 #print(blockid.hex())
 # bt = bytes.fromhex("1234")
