@@ -193,7 +193,7 @@ while True :
   cout +=1 
   # print(cout)
 
-block_header = hash256(block.serialize())[::-1].hex()
+block_header = blockid
 Coinbase_txn_serialize = ctx.serialize().hex()
 Coinbase_txn_id = ctx.id() 
 # print(block_header)
