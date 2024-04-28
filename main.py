@@ -167,7 +167,7 @@ txides = [bytes.fromhex(h) for h in txids]
 
 
 block = Block (
-  version= 1 ,
+  version = 2 ,
   prev_block= bytes.fromhex(base_block),
   merkle_root= merkle_root(txides) ,
   timestamp= int(ts),
