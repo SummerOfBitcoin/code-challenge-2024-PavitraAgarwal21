@@ -81,7 +81,7 @@ totalwu =0
 bitsize =0
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
-directory =  os.path.join(script_directory, "mempool")
+directory =  os.path.join(script_directory, "checkpool")
 for filename in os.listdir(directory):
   if filename.endswith('.json'):
         filepath = os.path.join(directory, filename)
@@ -160,7 +160,8 @@ txids.insert(0,CoinbaseTxnId)
 # print(txids)
 
 
-txides = [bytes.fromhex(h) for h in txids]
+txides = [bytes.fromhex(h[::-1]) for h in txids]
+# print(txides)
 
 # now we can create the blockheader  :
 
