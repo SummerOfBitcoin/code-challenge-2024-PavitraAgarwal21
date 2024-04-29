@@ -191,6 +191,7 @@ while True :
 
 Coinbase_txn_serialize = ctx.serialize().hex()
 Coinbase_txn_id = ctx.id() 
+block_header = block.serialize().hex()
 txcount = "FD"+int_to_little_endian(len(txids)+1,2).hex()
 script_directory = os.path.dirname(os.path.abspath(__file__))
 output_file_path = os.path.join(script_directory, "output.txt")
