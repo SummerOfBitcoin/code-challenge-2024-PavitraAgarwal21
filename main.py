@@ -81,7 +81,7 @@ totalwu =0
 bitsize =0
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
-directory =  os.path.join(script_directory, "mempool")
+directory =  os.path.join(script_directory, "checkpool")
 for filename in os.listdir(directory):
   if filename.endswith('.json'):
         filepath = os.path.join(directory, filename)
@@ -191,8 +191,14 @@ while True :
 
 Coinbase_txn_serialize = ctx.serialize().hex()
 Coinbase_txn_id = ctx.id() 
+
+
 block_header = block.serialize().hex()
+
+
 txcount = "FD"+int_to_little_endian(len(txids)+1,2).hex()
+
+
 script_directory = os.path.dirname(os.path.abspath(__file__))
 output_file_path = os.path.join(script_directory, "output.txt")
 with open(output_file_path, "w") as output_file:
