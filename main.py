@@ -212,12 +212,8 @@ while True :
     break 
   cout +=1 
 
-
-
 Coinbase_txn_serialize = ctx.serialize().hex()
 Coinbase_txn_id = ctx.id() 
-
-
 block_header = block.serialize().hex()
 
 
