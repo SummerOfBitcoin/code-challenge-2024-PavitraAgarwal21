@@ -156,7 +156,7 @@ txids.insert(0,CoinbaseTxnId)
 # print(txids)
 
 
-txides = [bytes.fromhex(h[::-1]) for h in txids]
+txides = [bytes.fromhex(h)[::-1]for h in txids]
 # print(txides)
 
 # now we can create the blockheader  :
@@ -193,10 +193,6 @@ while True :
 block_header = block.serialize().hex()
 Coinbase_txn_serialize = ctx.serialize().hex()
 Coinbase_txn_id = ctx.id() 
-# print(block_header)
-# print(Coinbase_txn_serialize)
-# for tx in txids :
-#   print(tx)
 txcount = "FD"+int_to_little_endian(len(txids)+1,2).hex()
 script_directory = os.path.dirname(os.path.abspath(__file__))
 output_file_path = os.path.join(script_directory, "output.txt")
@@ -207,52 +203,3 @@ with open(output_file_path, "w") as output_file:
     for tx in txids :
       output_file.write("{}\n".format(tx))
 
-
-# hashesdd = [bytes.fromhex(h)[::-1] for h in txdd]
-# print(merkle_root(hashesdd).hex())
-  
-#print(blockid.hex())
-# bt = bytes.fromhex("1234")
-# print(len(bt))
-# print(f'correct txid - {correct}')
-# print(f'error is - {error}')
-# version  = txex['version'] 
-# locktime = txex['locktime']
-# vouts = txex['vout']
-# tx_ins= [] 
-# tx_outs = []
-# tx = Tx(
-#   version=version ,
-#   tx_ins=tx_ins ,
-#   tx_outs= tx_outs ,
-#   locktime=locktime ,
-#   segwit=segwitness,
-# )
-# for txin in txex['vin'] :
-#     vin = TxIn (
-#     prev_tx=bytes.fromhex(txin['txid']),
-#     prev_index= txin['vout'],
-#     prevout=TxOut(
-#              script_pubkey=scripttype(txin['prevout']['scriptpubkey']),      
-#              amount= txin['prevout']['value'],
-#               ),
-#     script_sig= None if txin['scriptsig'] == "" else scripttype(txin['scriptsig']),
-#     sequence = txin['sequence'],
-#     witness = witnessbyte(txin['witness']) if tx.segwit else None ,
-#     )
-#     tx_ins.append(vin) 
-# for txout in txex['vout'] :
-#     vout = TxOut (
-#         script_pubkey = scripttype(txout['scriptpubkey']),
-#         amount=txout['value']
-#     )
-#     tx_outs.append(vout)
-
-# if tx.verify()==True :
-#   print(tx.id())
-# 1#0200000000010121adc70faebd381fd504affbd1adcdb6374134d1dea7f785557069bd570eb8ef0000000000fdffffff025bba0000000000001600146d689b16f4f33178e4241e907037c367fb1d15d890dd020000000000160014e88c315774d82dc0a417103c7200d68753686c5302 47 3044022005ce98f0b3a13b0a15ca11c8e8b3cb19fa0e03d15386e1d8cfec4b1afdbecc5c022068dd57e8287e96794b82945e99c663f2d4484cd048661bbaaeb734e8c01e055f01 21 0398c00f35640b026294b08a48054c9967a0ed79ec862af6f0e50e74af4ef8664a4cbc0c00
-# 2#0200000000010121adc70faebd381fd504affbd1adcdb6374134d1dea7f785557069bd570eb8ef0000000000fdffffff025bba0000000000001600146d689b16f4f33178e4241e907037c367fb1d15d890dd020000000000160014e88c315774d82dc0a417103c7200d68753686c5302 8e 3044022005ce98f0b3a13b0a15ca11c8e8b3cb19fa0e03d15386e1d8cfec4b1afdbecc5c022068dd57e8287e96794b82945e99c663f2d4484cd048661bbaaeb734e8c01e055f01 42 0398c00f35640b026294b08a48054c9967a0ed79ec862af6f0e50e74af4ef8664a4cbc0c00
-# 3#0200000000010121adc70faebd381fd504affbd1adcdb6374134d1dea7f785557069bd570eb8ef0000000000fdffffff025bba0000000000001600146d689b16f4f33178e4241e907037c367fb1d15d890dd020000000000160014e88c315774d82dc0a417103c7200d68753686c5302 47 3044022005ce98f0b3a13b0a15ca11c8e8b3cb19fa0e03d15386e1d8cfec4b1afdbecc5c022068dd57e8287e96794b82945e99c663f2d4484cd048661bbaaeb734e8c01e055f01 21 0398c00f35640b026294b08a48054c9967a0ed79ec862af6f0e50e74af4ef8664a4cbc0c00
-# 4#0200000000010121adc70faebd381fd504affbd1adcdb6374134d1dea7f785557069bd570eb8ef0000000000fdffffff025bba0000000000001600146d689b16f4f33178e4241e907037c367fb1d15d890dd020000000000160014e88c315774d82dc0a417103c7200d68753686c5302 47 3044022005ce98f0b3a13b0a15ca11c8e8b3cb19fa0e03d15386e1d8cfec4b1afdbecc5c022068dd57e8287e96794b82945e99c663f2d4484cd048661bbaaeb734e8c01e055f01210398c00f35640b026294b08a48054c9967a0ed79ec862af6f0e50e74af4ef8664a4cbc0c00
-
-# # leairing is that pub script ins in the form of the byte then it would be good 
