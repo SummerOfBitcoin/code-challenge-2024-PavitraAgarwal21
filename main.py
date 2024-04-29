@@ -156,28 +156,22 @@ txids.insert(0,CoinbaseTxnId)
 # print(txids)
 
 
-txides = [bytes.fromhex(h)[::-1]for h in txids]
-# print(txides)
+# import hashlib
+txides = [h[::-1] for h in txids]
+txides = [bytes.fromhex(tx) for tx in txides]
 
+# print(txides)
 # now we can create the blockheader  :
 block = Block (
   version = 0x20000002,
   prev_block= bytes.fromhex(base_block),
-  merkle_root= merkle_root(txides)[::-1],
+  merkle_root= merkle_root(txides),
   timestamp= int(ts),
   bits=bytes.fromhex('1f00ffff'),
   nonce= bytes.fromhex(nonce()), #nonce()) , #nonce should be of the bytes 
   tx_hashes = txides 
 )
 
-# print(block.serialize().hex())    #0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d7c2bac1d
-# print(block.serialize().hex() == '0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c')
-
-# print(hash256(block.serialize())[::-1].hex() == "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f")
-# print(bits_to_target(bytes.fromhex('1d00ffff')))
-
-# print(block.validate_merkle_root())
-# print(block.serialize().hex()) 
 cout = 0
 blockid = ""
 while True :
