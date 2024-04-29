@@ -81,7 +81,7 @@ totalwu =0
 bitsize =0
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
-directory =  os.path.join(script_directory, "checkpool")
+directory =  os.path.join(script_directory, "mempool")
 for filename in os.listdir(directory):
   if filename.endswith('.json'):
         filepath = os.path.join(directory, filename)
@@ -186,22 +186,7 @@ while True :
     blockid = block.hash()
     break 
   cout +=1 
-  # print(cout)
 
-# block_header = block.serialize().hex()
-# print(block_header)
-# bb = block.parse(BytesIO(bytes.fromhex(block_header)))
-# print(bb.merkle_root.hex())
-
-
-# txss = ["49a6af777488f947e2b6e2e0ab87f56f44cbfe8280c4dfd9c7c5d9c1b1291f10",
-# "11b26c7d7881bae8dfd0378c0a6144f6a9480f68eca67c9e9c1347a5baef105f",
-# "7caf72c076992de5bb24db15004c97da0c135910eb85986ea106de9b9a750b05",
-# "1bead20256df5fbe932c987cc8b2fbc90c74ebc945f8951a1793172b8dea40dc",
-# "fbcca1ef33984eaad190fb0f481ac0f8c9d2f0baf7718794ef596f74abef2837",
-# ]
-# txss = [bytes.fromhex(h)[::-1] for h in txss]
-# print(merkle_root(txss).hex()) 
 
 
 Coinbase_txn_serialize = ctx.serialize().hex()
