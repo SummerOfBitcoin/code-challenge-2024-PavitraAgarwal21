@@ -81,7 +81,7 @@ totalwu =0
 bitsize =0
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
-directory =  os.path.join(script_directory, "mempool")
+directory =  os.path.join(script_directory, "checkpool")
 for filename in os.listdir(directory):
   if filename.endswith('.json'):
         filepath = os.path.join(directory, filename)
@@ -160,18 +160,16 @@ txides = [bytes.fromhex(h)[::-1]for h in txids]
 # print(txides)
 
 # now we can create the blockheader  :
-
-
-
 block = Block (
-  version = 0x20000002 ,
+  version = 0x20000002,
   prev_block= bytes.fromhex(base_block),
-  merkle_root= merkle_root(txides) ,
+  merkle_root= merkle_root(txides),
   timestamp= int(ts),
-  bits=bytes.fromhex('1f00ffff') ,
-  nonce= bytes.fromhex(nonce())  , #nonce()) , #nonce should be of the bytes 
-  tx_hashes = txides
+  bits=bytes.fromhex('1f00ffff'),
+  nonce= bytes.fromhex(nonce()), #nonce()) , #nonce should be of the bytes 
+  tx_hashes = txides 
 )
+
 # print(block.serialize().hex())    #0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d7c2bac1d
 # print(block.serialize().hex() == '0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c')
 
@@ -190,7 +188,22 @@ while True :
   cout +=1 
   # print(cout)
 
-block_header = block.serialize().hex()
+# block_header = block.serialize().hex()
+# print(block_header)
+# bb = block.parse(BytesIO(bytes.fromhex(block_header)))
+# print(bb.merkle_root.hex())
+
+
+# txss = ["49a6af777488f947e2b6e2e0ab87f56f44cbfe8280c4dfd9c7c5d9c1b1291f10",
+# "11b26c7d7881bae8dfd0378c0a6144f6a9480f68eca67c9e9c1347a5baef105f",
+# "7caf72c076992de5bb24db15004c97da0c135910eb85986ea106de9b9a750b05",
+# "1bead20256df5fbe932c987cc8b2fbc90c74ebc945f8951a1793172b8dea40dc",
+# "fbcca1ef33984eaad190fb0f481ac0f8c9d2f0baf7718794ef596f74abef2837",
+# ]
+# txss = [bytes.fromhex(h)[::-1] for h in txss]
+# print(merkle_root(txss).hex()) 
+
+
 Coinbase_txn_serialize = ctx.serialize().hex()
 Coinbase_txn_id = ctx.id() 
 txcount = "FD"+int_to_little_endian(len(txids)+1,2).hex()
