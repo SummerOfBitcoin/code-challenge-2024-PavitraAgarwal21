@@ -155,21 +155,52 @@ txids.insert(0,CoinbaseTxnId)
 # print(totalwu)
 # print(txids)
 
+import hashlib
+
+def hash2561(data):
+    """Compute double SHA-256 hash of the input data (hex string)."""
+    first_hash = hashlib.sha256(bytes.fromhex(data)).digest()
+    second_hash = hashlib.sha256(first_hash).digest()
+    return second_hash.hex()
+def merkle_root(txids):
+    if len(txids) == 0:
+        return None
+
+    # Reverse the transaction IDs and convert to hexadecimal strings
+    level = [txid[::-1].hex() for txid in txids]
+
+    while len(level) > 1:
+        next_level = []
+
+        # Process pairs of hashes
+        for i in range(0, len(level), 2):
+            if i + 1 == len(level):
+                # In case of an odd number of elements, duplicate the last one
+                pair_hash = hash2561(level[i] + level[i])
+            else:
+                pair_hash = hash2561(level[i] + level[i + 1])
+
+            next_level.append(pair_hash)
+
+        # Update the current level with the next level of hashes
+        level = next_level
+
+    return bytes.fromhex(level[0])
 
 # import hashlib
-txides = [h[::-1] for h in txids]
-txides = [bytes.fromhex(tx) for tx in txides]
+
+# txides = [bytes.fromhex(tx) for tx in txides]
 
 # print(txides)
 # now we can create the blockheader  :
 block = Block (
   version = 0x20000002,
   prev_block= bytes.fromhex(base_block),
-  merkle_root= merkle_root(txides)[::-1],
+  merkle_root= merkle_root([bytes.fromhex(h) for h in txids]),
   timestamp= int(ts),
   bits=bytes.fromhex('1f00ffff'),
   nonce= bytes.fromhex(nonce()), #nonce()) , #nonce should be of the bytes 
-  tx_hashes = txides 
+  tx_hashes = txids 
 )
 
 cout = 0
