@@ -144,9 +144,10 @@ for filename in os.listdir(directory):
         except Exception as e:
             continue
 
-hashes = [bytes.fromhex(h)[::-1] for h in wxtid]
+hashes = [little_endian_to_big_endian_txid(tx) for tx in txids] 
 wxc = wxcommitment(merkle_root(hashes),bytes.fromhex(wxtidcons)).hex()
-witnesscomitmentpubkeyscript = "6a24aa21a9ed"+wxc
+witnesscomitmentpubkeyscript = "6a24aa21a9ed"+wxc 
+# certain bitcoin transaction 
 # so let now create the coinbase transaction 
 txin = [TxIn (
   prev_tx=bytes.fromhex("0000000000000000000000000000000000000000000000000000000000000000"),
@@ -185,9 +186,9 @@ txids.insert(0,CoinbaseTxnId)
 # print(txids)
 
 
-txides =  [h[::-1] for h in txids]
-txinlittle = [little_endian_to_big_endian_txid(tx) for tx in txides] 
-merklebigedian = big_endian_to_little_endian_txid(merkle_root(txinlittle).hex())
+
+txinlittle = [little_endian_to_big_endian_txid(tx) for tx in txids] 
+merklebigedian = (merkle_root(txinlittle))
 
 # print(little_endian_to_big_endian_txid(txids[0]).hex())
 # print(big_endian_to_little_endian_txid(little_endian_to_big_endian_txid(txids[0]).hex()).hex())
