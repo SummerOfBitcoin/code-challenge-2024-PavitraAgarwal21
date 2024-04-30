@@ -36,6 +36,35 @@ def witnessbyte(wits) :
         ans.append(bytes.fromhex(wit))
     return ans   
 
+
+def little_endian_to_big_endian_txid(hex_str):
+    # Split the input string into pairs of characters
+    byte_pairs = [hex_str[i:i+2] for i in range(0, len(hex_str), 2)]
+    
+    # Reverse the order of byte pairs to switch endianness
+    reversed_byte_pairs = byte_pairs[::-1]
+    
+    # Reconstruct the string from reversed byte pairs
+    big_endian_hex_str = ''.join(reversed_byte_pairs)
+    
+    return bytes.fromhex(big_endian_hex_str)
+
+def big_endian_to_little_endian_txid(hex_str):
+    # Split the input string into pairs of characters
+    byte_pairs = [hex_str[i:i+2] for i in range(0, len(hex_str), 2)]
+    
+    # Reverse the order of byte pairs to switch endianness
+    reversed_byte_pairs = byte_pairs[::-1]
+    
+    # Reconstruct the string from reversed byte pairs
+    little_endian_hex_str = ''.join(reversed_byte_pairs)
+    
+    return bytes.fromhex(little_endian_hex_str)
+
+
+
+
+
 def initializeTxn(txex , segwitness) :
   version  = txex['version'] 
   locktime = txex['locktime']
@@ -155,48 +184,21 @@ txids.insert(0,CoinbaseTxnId)
 # print(totalwu)
 # print(txids)
 
-import hashlib
 
-def hash2561(data):
-    """Compute double SHA-256 hash of the input data (hex string)."""
-    first_hash = hashlib.sha256(bytes.fromhex(data)).digest()
-    second_hash = hashlib.sha256(first_hash).digest()
-    return second_hash.hex()
-def merkle_root(txids):
-    if len(txids) == 0:
-        return None
 
-    # Reverse the transaction IDs and convert to hexadecimal strings
-    level = [txid[::-1].hex() for txid in txids]
 
-    while len(level) > 1:
-        next_level = []
+txinlittle = [little_endian_to_big_endian_txid(tx) for tx in txids] 
+merklebigedian = big_endian_to_little_endian_txid(merkle_root(txinlittle).hex())
 
-        # Process pairs of hashes
-        for i in range(0, len(level), 2):
-            if i + 1 == len(level):
-                # In case of an odd number of elements, duplicate the last one
-                pair_hash = hash2561(level[i] + level[i])
-            else:
-                pair_hash = hash2561(level[i] + level[i + 1])
+# print(little_endian_to_big_endian_txid(txids[0]).hex())
+# print(big_endian_to_little_endian_txid(little_endian_to_big_endian_txid(txids[0]).hex()).hex())
 
-            next_level.append(pair_hash)
 
-        # Update the current level with the next level of hashes
-        level = next_level
 
-    return bytes.fromhex(level[0])
-
-# import hashlib
-
-# txides = [bytes.fromhex(tx) for tx in txides]
-
-# print(txides)
-# now we can create the blockheader  :
 block = Block (
   version = 0x20000002,
   prev_block= bytes.fromhex(base_block),
-  merkle_root= merkle_root([bytes.fromhex(h) for h in txids]),
+  merkle_root= merklebigedian ,
   timestamp= int(ts),
   bits=bytes.fromhex('1f00ffff'),
   nonce= bytes.fromhex(nonce()), #nonce()) , #nonce should be of the bytes 
