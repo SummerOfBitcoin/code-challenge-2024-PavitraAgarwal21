@@ -143,8 +143,8 @@ for filename in os.listdir(directory):
 
 
 
-hashes = [little_endian_to_big_endian_txid(tx) for tx in txids] 
-wxc = wxcommitment((merkle_root(hashes)),bytes.fromhex(wxtidcons)).hex()
+# hashes = [little_endian_to_big_endian_txid(tx) for tx in txids] 
+# wxc = wxcommitment((merkle_root(hashes)),bytes.fromhex(wxtidcons)).hex()
 # witnesscomitmentpubkeyscript = "6a24aa21a9ed"+wxc 
 witnesscomitmentpubkeyscript = "6a24aa21a9ed"+"2970b974bfa464d2034e1e87fd186133bc1353406ddf5e30f5f4bbb1a95c5f81"
 
