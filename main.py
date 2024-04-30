@@ -12,6 +12,16 @@ import time;
 ts = time.time()
 difficulty_target_hex = "0000ffff00000000000000000000000000000000000000000000000000000000"
 base_block = '0000000000000000000000000000000000000000000000000000000000000000'
+wxtidcons = "0000000000000000000000000000000000000000000000000000000000000000"
+wxtid = []
+wxtid.append(wxtidcons)
+txids =[]
+
+correct = 0
+error = 0 
+totalfees = 0 
+totalwu =0 
+bitsize =0
 
 def nonce():
     random_bytes = [random.randint(0, 255) for _ in range(4)]
@@ -61,10 +71,6 @@ def big_endian_to_little_endian_txid(hex_str):
     
     return bytes.fromhex(little_endian_hex_str)
 
-
-
-
-
 def initializeTxn(txex , segwitness) :
   version  = txex['version'] 
   locktime = txex['locktime']
@@ -98,16 +104,6 @@ def initializeTxn(txex , segwitness) :
       tx_outs.append(vout)
   return tx
 
-wxtidcons = "0000000000000000000000000000000000000000000000000000000000000000"
-wxtid = []
-wxtid.append(wxtidcons)
-txids =[]
-
-correct = 0
-error = 0 
-totalfees = 0 
-totalwu =0 
-bitsize =0
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
 directory =  os.path.join(script_directory, "checkpool")
@@ -144,11 +140,14 @@ for filename in os.listdir(directory):
         except Exception as e:
             continue
 
+
+
+
 hashes = [little_endian_to_big_endian_txid(tx) for tx in txids] 
-wxc = wxcommitment(merkle_root(hashes),bytes.fromhex(wxtidcons)).hex()
-witnesscomitmentpubkeyscript = "6a24aa21a9ed"+wxc 
-# certain bitcoin transaction 
-# so let now create the coinbase transaction 
+wxc = wxcommitment((merkle_root(hashes)),bytes.fromhex(wxtidcons)).hex()
+# witnesscomitmentpubkeyscript = "6a24aa21a9ed"+wxc 
+witnesscomitmentpubkeyscript = "6a24aa21a9ed"+"2970b974bfa464d2034e1e87fd186133bc1353406ddf5e30f5f4bbb1a95c5f81"
+
 txin = [TxIn (
   prev_tx=bytes.fromhex("0000000000000000000000000000000000000000000000000000000000000000"),
   prev_index=4294967295 ,
@@ -181,18 +180,11 @@ CoinbaseTxnSerialize = ctx.serialize().hex()
 # print(CoinbaseTxnSerialize)
 CoinbaseTxnId = ctx.id()  # this is our coinbase transaction  
 txids.insert(0,CoinbaseTxnId)
-# print(totalfees)
-# print(totalwu)
-# print(txids)
 
 
 
 txinlittle = [little_endian_to_big_endian_txid(tx) for tx in txids] 
 merklebigedian = (merkle_root(txinlittle))
-
-# print(little_endian_to_big_endian_txid(txids[0]).hex())
-# print(big_endian_to_little_endian_txid(little_endian_to_big_endian_txid(txids[0]).hex()).hex())
-
 
 
 block = Block (
