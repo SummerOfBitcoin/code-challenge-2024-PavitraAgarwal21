@@ -65,6 +65,9 @@ class Tx:
         return (hash256(self.serialize_segwit())[::-1]).hex() # used in the formation of the witness commitment 
 
     # tag::source5[]
+    def hash256for(self) :
+        return hash256(self.serialize_legacy())
+    
     def hash(self):
         return hash256(self.serialize_legacy())[::-1]
 # currently only serialixe the transaction using the 

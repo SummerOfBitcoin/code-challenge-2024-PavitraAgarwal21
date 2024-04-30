@@ -185,8 +185,8 @@ txids.insert(0,CoinbaseTxnId)
 # print(txids)
 
 
-
-txinlittle = [little_endian_to_big_endian_txid(tx) for tx in txids] 
+txides =  [h[::-1] for h in txids]
+txinlittle = [little_endian_to_big_endian_txid(tx) for tx in txides] 
 merklebigedian = big_endian_to_little_endian_txid(merkle_root(txinlittle).hex())
 
 # print(little_endian_to_big_endian_txid(txids[0]).hex())
