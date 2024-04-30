@@ -183,6 +183,11 @@ txids.insert(0,CoinbaseTxnId)
 
 
 
+
+
+
+
+
 txinlittle = [little_endian_to_big_endian_txid(tx) for tx in txids] 
 merklebigedian = (merkle_root(txinlittle))
 
@@ -220,6 +225,7 @@ with open(output_file_path, "w") as output_file:
     output_file.write("{}\n".format(block_header))  
     output_file.write("{}\n".format(Coinbase_txn_serialize))
     output_file.write("{}\n".format(txcount))
+    txids = [h[::-1] for h in txids]
     for tx in txids :
       output_file.write("{}\n".format(tx))
 
