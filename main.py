@@ -186,7 +186,6 @@ txids.insert(0,CoinbaseTxnId)
 
 
 
-
 txinlittle = [little_endian_to_big_endian_txid(tx) for tx in txids] 
 merklebigedian = big_endian_to_little_endian_txid(merkle_root(txinlittle).hex())
 
